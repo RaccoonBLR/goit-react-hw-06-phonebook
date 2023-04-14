@@ -1,24 +1,35 @@
-import { Label, Wrapper, Input } from './Filter.styled';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+
+import { getFilterValue } from 'redux/selectors';
+import { setFilterValue } from 'redux/filterSlice';
+
 import { HiOutlineSearch } from 'react-icons/hi';
-import PropTypes from 'prop-types';
 
-export const Filter = ({ handleChange, filter }) => (
-  <Label>
-    <Wrapper>
-      <HiOutlineSearch size={28} />
-      <Input
-        onChange={handleChange}
-        value={filter}
-        type="text"
-        name="filter"
-        placeholder="Find by name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-      />
-    </Wrapper>
-  </Label>
-);
+import { Label, Wrapper, Input } from './Filter.styled';
 
-Filter.propTypes = {
-  handleChange: PropTypes.func.isRequired,
-  filter: PropTypes.string.isRequired,
+export const Filter = () => {
+  const dispatch = useDispatch();
+  const filter = useSelector(getFilterValue);
+
+  const onChange = evt => {
+    const { value } = evt.currentTarget;
+    dispatch(setFilterValue(value));
+  };
+
+  return (
+    <Label>
+      <Wrapper>
+        <HiOutlineSearch size={28} />
+        <Input
+          onChange={onChange}
+          value={filter}
+          type="text"
+          name="filter"
+          placeholder="Find by name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+        />
+      </Wrapper>
+    </Label>
+  );
 };

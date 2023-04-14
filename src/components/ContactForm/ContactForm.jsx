@@ -1,42 +1,35 @@
-import { useState } from 'react';
-import { Button, Label, Input } from './ContactForm.styled';
-import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/contactsSlice';
+
 import { AiOutlineUser } from 'react-icons/ai';
 import { FiSmartphone } from 'react-icons/fi';
-import PropTypes from 'prop-types';
 
-export const ContactForm = ({ handleAppend }) => {
-  const INITIAL_STATE = '';
+import { nanoid } from 'nanoid';
 
-  const [name, setName] = useState(INITIAL_STATE);
-  const [number, setNumber] = useState(INITIAL_STATE);
+import { Button, Label, Input } from './ContactForm.styled';
 
-  const handleReset = () => {
-    setName(INITIAL_STATE);
-    setNumber(INITIAL_STATE);
+export const ContactForm = () => {
+  const dispatch = useDispatch();
+  const contacts = useSelector(getContacts);
+
+  const handleAppend = newContact => {
+    const { name: newName } = newContact;
+
+    contacts.some(({ name }) => name === newName)
+      ? alert(`${newName} is already in contacts.`)
+      : dispatch(addContact(newContact));
   };
 
-  const handleChange = ({ currentTarget: { name, value } }) => {
-    switch (name) {
-      case 'name':
-        setName(value);
-        break;
+  const handleSubmit = evt => {
+    evt.preventDefault();
+    const name = evt.target.elements.name.value;
+    const number = evt.target.elements.number.value;
+    const newContact = { name, number, id: nanoid() };
 
-      case 'number':
-        setNumber(value);
-        break;
-
-      default:
-        return;
-    }
-  };
-
-  const handleSubmit = event => {
-    event.preventDefault();
-    const id = nanoid();
-    const newContact = { name, number, id };
     handleAppend(newContact);
-    handleReset();
+
+    evt.target.reset();
   };
 
   return (
@@ -44,8 +37,6 @@ export const ContactForm = ({ handleAppend }) => {
       <Label>
         <AiOutlineUser size={28} />
         <Input
-          value={name}
-          onChange={handleChange}
           type="text"
           name="name"
           placeholder="Name"
@@ -57,8 +48,6 @@ export const ContactForm = ({ handleAppend }) => {
       <Label>
         <FiSmartphone size={28} />
         <Input
-          value={number}
-          onChange={handleChange}
           type="tel"
           name="number"
           placeholder="Number"
@@ -70,8 +59,4 @@ export const ContactForm = ({ handleAppend }) => {
       <Button type="submit">Add contact</Button>
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  handleAppend: PropTypes.func.isRequired,
 };
