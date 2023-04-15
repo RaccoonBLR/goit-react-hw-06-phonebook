@@ -11,7 +11,6 @@ import {
   ContactText,
   ContactNumber,
   Wrapper,
-  MessageText,
 } from './ContactList.styled';
 import { FiDelete } from 'react-icons/fi';
 import { BsDot } from 'react-icons/bs';
@@ -26,25 +25,29 @@ export const ContactList = () => {
     dispatch(deleteContact(id));
   };
 
-  return contacts.length ? (
+  return (
     <List>
-      {contacts.map(({ name, number, id }) =>
-        filter ? (
-          name.toLowerCase().includes(filter.toLowerCase()) && (
-            <Item key={id}>
-              <ContactText>
-                <BsDot size={32} />
-                {name}:
-              </ContactText>
-              <Wrapper>
-                <ContactNumber>{number}</ContactNumber>
-                <Button onClick={handleDelete} id={id}>
-                  <FiDelete size={24} />
-                </Button>
-              </Wrapper>
-            </Item>
-          )
-        ) : (
+      {contacts.map(({ name, number, id }) => {
+        if (filter) {
+          return (
+            name.toLowerCase().includes(filter.toLowerCase()) && (
+              <Item key={id}>
+                <ContactText>
+                  <BsDot size={32} />
+                  {name}:
+                </ContactText>
+                <Wrapper>
+                  <ContactNumber>{number}</ContactNumber>
+                  <Button onClick={handleDelete} id={id}>
+                    <FiDelete size={24} />
+                  </Button>
+                </Wrapper>
+              </Item>
+            )
+          );
+        }
+
+        return (
           <Item key={id}>
             <ContactText>
               <BsDot size={32} />
@@ -57,10 +60,8 @@ export const ContactList = () => {
               </Button>
             </Wrapper>
           </Item>
-        )
-      )}
+        );
+      })}
     </List>
-  ) : (
-    <MessageText>You have not added any contacts yet</MessageText>
   );
 };

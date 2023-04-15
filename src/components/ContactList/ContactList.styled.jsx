@@ -16,11 +16,6 @@ export const ContactText = styled.p`
   font-size: 20px;
 `;
 
-export const MessageText = styled.p`
-  font-weight: 200;
-  font-size: 20px;
-`;
-
 export const Wrapper = styled.div`
   display: flex;
   align-items: center;
